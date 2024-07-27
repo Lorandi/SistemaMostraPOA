@@ -6,4 +6,6 @@ public class MapperConstants {
 
     private MapperConstants() {
     }
+    public static final OuvinteMapper ouvinteMapper = Mappers.getMapper(OuvinteMapper.class);
+
 }

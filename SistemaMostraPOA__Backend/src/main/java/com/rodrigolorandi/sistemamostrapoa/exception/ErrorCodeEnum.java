@@ -9,7 +9,7 @@ public enum ErrorCodeEnum {
 
     ERROR_GENERIC_EXCEPTION("error.generic.exception"),
     ERROR_DATE_FORMAT("error.date.format"),
-    ERROR_PERSON_NOT_FOUND("error.pessoa.not.found");
+    ERRO_OUVINTE_NAO_ENCONTRADO("erro.ouvinte.nao.encontrado"),;
 
     private final String messageKey;
 }
