@@ -1,6 +1,7 @@
 package com.rodrigolorandi.sistemamostrapoa.resource.handler;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import com.rodrigolorandi.sistemamostrapoa.helper.MessageHelper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.xml.bind.ValidationException;
@@ -57,8 +58,9 @@ public class ResourceExceptionHandler {
             HttpServletRequest request) {
         HttpStatus status = BAD_REQUEST;
         var message = messageHelper.get(ERROR_GENERIC_EXCEPTION, e);
-
-        if (((InvalidFormatException) e.getCause()).getTargetType().getName().equals("java.time.LocalDate")) {
+        if (e.getCause() instanceof ValueInstantiationException) {
+            message = e.getCause().getCause().getMessage();
+        }else if (((InvalidFormatException) e.getCause()).getTargetType().getName().equals("java.time.LocalDate")) {
             message = messageHelper.get(ERROR_DATE_FORMAT, e);
         }
         log.error(request.getRequestURI(), e);
