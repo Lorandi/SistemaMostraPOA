@@ -6,5 +6,6 @@ CREATE TABLE IF NOT EXISTS ouvinte (
     email               VARCHAR(50),
     cpf                 VARCHAR(15),
     phone               VARCHAR(15),
+    acessibility        VARCHAR(255),
     PRIMARY KEY (id)
     );

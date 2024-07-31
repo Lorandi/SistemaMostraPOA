@@ -55,7 +55,8 @@ public class OuvinteService {
                 .withName(updateDTO.name())
                 .withEmail(updateDTO.email())
                 .withPhone(updateDTO.phone())
-                .withCpf(updateDTO.cpf())));
+                .withCpf(updateDTO.cpf())
+                .withAccessibility(updateDTO.accessibility())));
         JsonUtils.logObject(log,"Ouvinte updated",  ouvinteDTO);
         return ouvinteDTO;
     }

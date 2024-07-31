@@ -20,4 +20,5 @@ public class Ouvinte {
     private String email;
     private String cpf;
     private String phone;
+    private String accessibility;
 }

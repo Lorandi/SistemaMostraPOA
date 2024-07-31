@@ -7,5 +7,6 @@ public record OuvinteDTO(Long id,
                               String name,
                               String email,
                               String cpf,
-                              String phone
+                              String phone,
+                              String accessibility
                               ) {}

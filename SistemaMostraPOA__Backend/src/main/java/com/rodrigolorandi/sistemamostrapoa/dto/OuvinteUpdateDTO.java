@@ -9,7 +9,8 @@ public record OuvinteUpdateDTO(@NonNull Long id,
                                @NonNull String name,
                                @NonNull String email,
                                @NonNull String cpf,
-                               String phone
+                               String phone,
+                               String accessibility
                               ) {
     @Builder
     public OuvinteUpdateDTO {

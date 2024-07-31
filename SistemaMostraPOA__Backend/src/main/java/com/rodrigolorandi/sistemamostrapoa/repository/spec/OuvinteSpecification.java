@@ -28,8 +28,8 @@ public class OuvinteSpecification implements Specification<Ouvinte> {
     public Predicate toPredicate(Root<Ouvinte> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder builder) {
         final var predicate = new ArrayList<Predicate>();
         name.ifPresent(n -> predicate.add(builder.like(builder.lower(root.get("name")), "%" + n.toLowerCase() + "%")));
-        email.ifPresent(ce -> predicate.add(builder.like(builder.lower(root.get("corporateEmail")), ce.toLowerCase())));
-        cpf.ifPresent(ps -> predicate.add(root.get("ouvinteStatus").in(ps)));
+        email.ifPresent(ce -> predicate.add(builder.like(builder.lower(root.get("email")), ce.toLowerCase())));
+        cpf.ifPresent(ps -> predicate.add(root.get("cpf").in(ps)));
         phone.ifPresent(p -> predicate.add(builder.like(builder.lower(root.get("phone")), "%" + p.toLowerCase() + "%")));
 
         criteriaQuery.distinct(true);

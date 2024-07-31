@@ -8,7 +8,8 @@ import lombok.With;
 public record OuvinteCreateDTO(@NonNull String name,
                                @NonNull String email,
                                @NonNull String cpf,
-                               String phone
+                               String phone,
+                               String accessibility
                               ) {
     @Builder
     public OuvinteCreateDTO {
