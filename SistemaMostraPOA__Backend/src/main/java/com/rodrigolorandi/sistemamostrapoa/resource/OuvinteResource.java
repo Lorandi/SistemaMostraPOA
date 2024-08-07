@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequestMapping("/ouvinte")
 @RequiredArgsConstructor
+@Tag(name = "Ouvinte")
 public class OuvinteResource {
 
     private final OuvinteService service;
@@ -63,7 +65,7 @@ public class OuvinteResource {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete Ouvinte by id",
-            responses = {@ApiResponse(responseCode = "204", description = "Elector successfully deleted")})
+            responses = {@ApiResponse(responseCode = "204", description = "Ouvinte successfully deleted")})
     public void delete(@PathVariable Long id) {
         service.delete(id);
     }
