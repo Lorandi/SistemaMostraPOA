@@ -8,5 +8,6 @@ public class MapperConstants {
     }
     public static final OuvinteMapper ouvinteMapper = Mappers.getMapper(OuvinteMapper.class);
     public static final AvaliadorMapper avaliadorMapper = Mappers.getMapper(AvaliadorMapper.class);
+    public static final DisponibilidadeHorarioMapper disponibilidadeHorarioMapper = Mappers.getMapper(DisponibilidadeHorarioMapper.class);
 
 }
