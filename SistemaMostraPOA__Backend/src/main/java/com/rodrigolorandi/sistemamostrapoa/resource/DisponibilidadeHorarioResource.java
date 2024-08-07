@@ -53,7 +53,7 @@ public class DisponibilidadeHorarioResource {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete DisponibilidadeHorario by id",
-            responses = {@ApiResponse(responseCode = "204", description = "Elector successfully deleted")})
+            responses = {@ApiResponse(responseCode = "204", description = "DisponibilidadeHorario successfully deleted")})
     public void delete(@PathVariable Long id) {
         service.deleteById(id);
     }
