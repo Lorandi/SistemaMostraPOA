@@ -11,4 +11,5 @@ public class MapperConstants {
     public static final AvaliadorMapper avaliadorMapper = Mappers.getMapper(AvaliadorMapper.class);
     public static final DisponibilidadeHorarioMapper disponibilidadeHorarioMapper = Mappers.getMapper(DisponibilidadeHorarioMapper.class);
     public static final TrabalhoMapper trabalhoMapper = Mappers.getMapper(TrabalhoMapper.class);
+    public static final ParticipanteTrabalhoMapper participanteTrabalhoMapper = Mappers.getMapper(ParticipanteTrabalhoMapper.class);
 }
