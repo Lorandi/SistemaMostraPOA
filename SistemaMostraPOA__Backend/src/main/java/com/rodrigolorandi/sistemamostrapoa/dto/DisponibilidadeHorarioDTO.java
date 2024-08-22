@@ -1,5 +1,6 @@
 package com.rodrigolorandi.sistemamostrapoa.dto;
 
+import com.rodrigolorandi.sistemamostrapoa.enums.TurnoEnum;
 import lombok.Builder;
 import lombok.With;
 
@@ -9,7 +10,7 @@ import java.time.LocalDate;
 public record DisponibilidadeHorarioDTO(Long id,
                                         LocalDate data,
                                         String diaSemana,
-                                        String turno) {
+                                        TurnoEnum turno) {
     @Builder
     public DisponibilidadeHorarioDTO {
     }

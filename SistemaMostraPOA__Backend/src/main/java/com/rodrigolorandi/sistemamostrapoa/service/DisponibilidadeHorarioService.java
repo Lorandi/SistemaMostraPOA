@@ -16,6 +16,7 @@ import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 
+import static com.rodrigolorandi.sistemamostrapoa.exception.ErrorCodeEnum.ERRO_DISPONIBILIDADE_DE_HORARIO_JA_EXISTENTE;
 import static com.rodrigolorandi.sistemamostrapoa.exception.ErrorCodeEnum.ERRO_DISPONIBILIDADE_DE_HORARIO_NAO_ENCONTRADA;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static com.rodrigolorandi.sistemamostrapoa.util.mapper.MapperConstants.disponibilidadeHorarioMapper;
@@ -30,6 +31,12 @@ public class DisponibilidadeHorarioService {
 
     @Transactional
     public DisponibilidadeHorarioDTO create(final DisponibilidadeHorarioCreateDTO requestDTO) {
+
+        repository.findByDataAndTurno(requestDTO.data(), requestDTO.turno())
+                .ifPresent(dh -> {
+                    log.error(messageHelper.get(ERRO_DISPONIBILIDADE_DE_HORARIO_JA_EXISTENTE, requestDTO.data().toString(), requestDTO.turno()));
+                    throw new ResponseStatusException(NOT_FOUND, messageHelper.get(ERRO_DISPONIBILIDADE_DE_HORARIO_JA_EXISTENTE, requestDTO.data().toString(), requestDTO.turno()));
+                });
 
         DisponibilidadeHorario dh = DisponibilidadeHorario.builder()
                 .data(requestDTO.data())

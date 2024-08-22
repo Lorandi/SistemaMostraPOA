@@ -7,7 +7,7 @@ import java.util.List;
 
 @With
 public record VoluntarioDisponibilidadeDTO(Long voluntarioId,
-                                           List<Long> disponibilidadeHorarioId
+                                           List<DisponibilidadeHorarioDTO> disponibilidadeHorarios
                                                 ) {
     @Builder
     public VoluntarioDisponibilidadeDTO {

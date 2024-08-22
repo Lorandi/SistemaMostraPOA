@@ -1,8 +1,6 @@
 package com.rodrigolorandi.sistemamostrapoa.resource;
 
-import com.rodrigolorandi.sistemamostrapoa.dto.VoluntarioCreateDTO;
-import com.rodrigolorandi.sistemamostrapoa.dto.VoluntarioDTO;
-import com.rodrigolorandi.sistemamostrapoa.dto.VoluntarioUpdateDTO;
+import com.rodrigolorandi.sistemamostrapoa.dto.*;
 import com.rodrigolorandi.sistemamostrapoa.service.VoluntarioService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -69,5 +67,21 @@ public class VoluntarioResource {
             responses = {@ApiResponse(responseCode = "204", description = "Voluntario successfully deleted")})
     public void delete(@PathVariable Long id) {
         service.delete(id);
+    }
+
+    @PostMapping("/disponibilidade")
+    @ResponseStatus(CREATED)
+    @Operation(summary = "Create voluntario",
+            responses = {@ApiResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = VoluntarioDisponibilidadeDTO.class)))})
+    public VoluntarioDisponibilidadeDTO create(@Valid @RequestBody VoluntarioDisponibilidadeCreateDTO requestDTO) {
+        return service.create(requestDTO);
+    }
+
+    @GetMapping("disponibilidade/{voluntarioId}")
+    @Operation(summary = "Search Voluntario Disponibilidade by voluntarioId",
+            responses = {@ApiResponse(responseCode = "200", description = "Resource successfully retrieved",
+                    content = @Content(schema = @Schema(implementation = VoluntarioDisponibilidadeDTO.class)))})
+    public VoluntarioDisponibilidadeDTO findDisponibilidadeByVoluntarioId(@Valid @PathVariable Long voluntarioId) {
+        return service.findByVoluntarioId(voluntarioId);
     }
 }

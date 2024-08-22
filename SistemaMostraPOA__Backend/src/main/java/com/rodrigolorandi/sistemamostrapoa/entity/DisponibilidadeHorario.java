@@ -1,5 +1,6 @@
 package com.rodrigolorandi.sistemamostrapoa.entity;
 
+import com.rodrigolorandi.sistemamostrapoa.enums.TurnoEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,5 +20,6 @@ public class DisponibilidadeHorario {
     private Long id;
     private LocalDate data;
     private String diaSemana;
-    private String turno;
+    @Enumerated(EnumType.STRING)
+    private TurnoEnum turno;
 }

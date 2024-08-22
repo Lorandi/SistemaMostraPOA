@@ -14,6 +14,7 @@ import lombok.*;
 public class VoluntarioDisponibilidade {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Long voluntarioId;
     private Long disponibilidadeHorarioId;
 }

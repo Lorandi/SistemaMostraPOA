@@ -8,11 +8,13 @@ import com.rodrigolorandi.sistemamostrapoa.helper.MessageHelper;
 import com.rodrigolorandi.sistemamostrapoa.repository.VoluntarioDisponibilidadeRepository;
 import com.rodrigolorandi.sistemamostrapoa.repository.VoluntarioRepository;
 import com.rodrigolorandi.sistemamostrapoa.repository.spec.VoluntarioSpecification;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +31,7 @@ public class VoluntarioService {
     private final VoluntarioRepository repository;
     private final MessageHelper messageHelper;
     private final VoluntarioDisponibilidadeRepository voluntarioDisponibilidadeRepository;
+    private final DisponibilidadeHorarioService disponibilidadeHorarioService;
 
     public VoluntarioDTO create(final VoluntarioCreateDTO requestDTO) {
         Voluntario voluntario = repository.save(voluntarioMapper.buildEntity(requestDTO));
@@ -62,10 +65,10 @@ public class VoluntarioService {
     }
 
     public List<VoluntarioDTO> findAll(final Optional<String> name,
-                                      Optional<String> email,
-                                      Optional<String> cpf,
-                                      Optional<String> phone,
-                                      Optional<String> course) {
+                                       Optional<String> email,
+                                       Optional<String> cpf,
+                                       Optional<String> phone,
+                                       Optional<String> course) {
         return repository.findAll(VoluntarioSpecification.builder().name(name).email(email).cpf(cpf).phone(phone)
                         .course(course).build()).stream().map(voluntarioMapper::buildDTO)
                 .sorted(Comparator.comparing(VoluntarioDTO::id))
@@ -78,27 +81,39 @@ public class VoluntarioService {
         JsonUtils.logObject(log, "Voluntario deleted:", voluntario);
     }
 
+    @Transactional
     public VoluntarioDisponibilidadeDTO create(VoluntarioDisponibilidadeCreateDTO requestDTO) {
-        //checar se o voluntario existe
-        findById(requestDTO.voluntarioId());
-        //deletar todas as disponibilidades do voluntario
-        voluntarioDisponibilidadeRepository.deleteAllByVoluntarioId(requestDTO.voluntarioId());
-        //criar as novas disponibilidades
+        Long voluntarioId = requestDTO.voluntarioId();
+        findById(voluntarioId);
+        voluntarioDisponibilidadeRepository.deleteAllByVoluntarioId(voluntarioId);
 
-        requestDTO.disponibilidadeHorarioId().forEach(disponibilidadeHorarioId -> {
-            VoluntarioDisponibilidade voluntarioDisponibilidade = voluntarioDisponibilidadeRepository.save(VoluntarioDisponibilidade.builder()
-                    .voluntarioId(requestDTO.voluntarioId())
-                    .disponibilidadeHorarioId(disponibilidadeHorarioId)
+        List<DisponibilidadeHorarioDTO> disponibilidadeHorarioDTO = new ArrayList<>();
+        requestDTO.disponibilidadeHorarioId().forEach(disponibilidadeId -> {
+            disponibilidadeHorarioDTO.add(disponibilidadeHorarioService.findDTOById(disponibilidadeId));
+            voluntarioDisponibilidadeRepository.save(VoluntarioDisponibilidade.builder()
+                    .voluntarioId(voluntarioId)
+                    .disponibilidadeHorarioId(disponibilidadeId)
                     .build());
-            JsonUtils.logObject(log, "Disponibilidade criada", voluntarioDisponibilidade);
         });
 
         return VoluntarioDisponibilidadeDTO.builder()
-                .voluntarioId(requestDTO.voluntarioId())
-                .disponibilidadeHorarioId(requestDTO.disponibilidadeHorarioId())
+                .voluntarioId(voluntarioId)
+                .disponibilidadeHorarios(disponibilidadeHorarioDTO)
                 .build();
-
     }
 
+    public VoluntarioDisponibilidadeDTO findByVoluntarioId(Long voluntarioId) {
+        findById(voluntarioId);
+
+        List<VoluntarioDisponibilidade> voluntarioDisponibilidades = voluntarioDisponibilidadeRepository.findByVoluntarioId(voluntarioId);
+
+        return VoluntarioDisponibilidadeDTO.builder()
+                .voluntarioId(voluntarioId)
+                .disponibilidadeHorarios(voluntarioDisponibilidades.stream()
+                        .map(voluntarioDisponibilidade -> disponibilidadeHorarioService.findDTOById(voluntarioDisponibilidade
+                                .getDisponibilidadeHorarioId()))
+                        .collect(Collectors.toList()))
+                .build();
+    }
 
 }
