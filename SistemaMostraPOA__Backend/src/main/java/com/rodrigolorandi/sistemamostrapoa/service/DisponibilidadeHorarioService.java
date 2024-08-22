@@ -5,7 +5,9 @@ import com.rodrigolorandi.sistemamostrapoa.dto.DisponibilidadeHorarioDTO;
 import com.rodrigolorandi.sistemamostrapoa.entity.DisponibilidadeHorario;
 import com.rodrigolorandi.sistemamostrapoa.helper.JsonUtils;
 import com.rodrigolorandi.sistemamostrapoa.helper.MessageHelper;
+import com.rodrigolorandi.sistemamostrapoa.repository.AvaliadorDisponibilidadeRepository;
 import com.rodrigolorandi.sistemamostrapoa.repository.DisponibilidadeHorarioRepository;
+import com.rodrigolorandi.sistemamostrapoa.repository.VoluntarioDisponibilidadeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,8 @@ import static com.rodrigolorandi.sistemamostrapoa.util.mapper.MapperConstants.di
 public class DisponibilidadeHorarioService {
     private final DisponibilidadeHorarioRepository repository;
     private final MessageHelper messageHelper;
+    private final AvaliadorDisponibilidadeRepository avaliadorDisponibilidadeRepository;
+    private final VoluntarioDisponibilidadeRepository voluntarioDisponibilidadeRepository;
 
     @Transactional
     public DisponibilidadeHorarioDTO create(final DisponibilidadeHorarioCreateDTO requestDTO) {
@@ -68,8 +72,11 @@ public class DisponibilidadeHorarioService {
         });
     }
 
+    @Transactional
     public void deleteById(final Long id) {
         findById(id);
+        avaliadorDisponibilidadeRepository.deleteAllByDisponibilidadeHorarioId(id);
+        voluntarioDisponibilidadeRepository.deleteAllByDisponibilidadeHorarioId(id);
         repository.deleteById(id);
     }
 

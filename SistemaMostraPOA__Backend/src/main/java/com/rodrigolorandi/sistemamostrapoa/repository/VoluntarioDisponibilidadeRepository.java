@@ -11,4 +11,5 @@ public interface VoluntarioDisponibilidadeRepository extends JpaRepository<Volun
     List<VoluntarioDisponibilidade> findByVoluntarioId(Long voluntarioId);
 
     void deleteAllByVoluntarioId(Long voluntarioId);
+    void deleteAllByDisponibilidadeHorarioId(Long disponibilidadeHorarioId);
 }

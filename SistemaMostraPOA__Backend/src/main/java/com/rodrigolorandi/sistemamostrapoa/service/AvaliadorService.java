@@ -76,9 +76,11 @@ public class AvaliadorService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void delete(final Long id) {
         Avaliador avaliador = findById(id);
         repository.delete(avaliador);
+        avaliadorDisponibilidadeRepository.deleteAllByAvaliadorId(id);
         JsonUtils.logObject(log, "Avaliador deleted:", avaliador);
     }
 

@@ -75,8 +75,10 @@ public class VoluntarioService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void delete(final Long id) {
         Voluntario voluntario = findById(id);
+        voluntarioDisponibilidadeRepository.deleteAllByVoluntarioId(id);
         repository.delete(voluntario);
         JsonUtils.logObject(log, "Voluntario deleted:", voluntario);
     }

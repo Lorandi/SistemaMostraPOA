@@ -11,4 +11,6 @@ public interface AvaliadorDisponibilidadeRepository extends JpaRepository<Avalia
     List<AvaliadorDisponibilidade> findByAvaliadorId(Long avaliadorId);
 
     void deleteAllByAvaliadorId(Long avaliadorId);
+    void deleteAllByDisponibilidadeHorarioId(Long disponibilidadeHorarioId);
+
 }
