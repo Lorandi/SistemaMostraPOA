@@ -1,18 +1,20 @@
 package com.rodrigolorandi.sistemamostrapoa.service;
 
-import com.rodrigolorandi.sistemamostrapoa.dto.AvaliadorCreateDTO;
-import com.rodrigolorandi.sistemamostrapoa.dto.AvaliadorDTO;
-import com.rodrigolorandi.sistemamostrapoa.dto.AvaliadorUpdateDTO;
+import com.rodrigolorandi.sistemamostrapoa.dto.*;
 import com.rodrigolorandi.sistemamostrapoa.entity.Avaliador;
+import com.rodrigolorandi.sistemamostrapoa.entity.AvaliadorDisponibilidade;
 import com.rodrigolorandi.sistemamostrapoa.helper.JsonUtils;
 import com.rodrigolorandi.sistemamostrapoa.helper.MessageHelper;
 import com.rodrigolorandi.sistemamostrapoa.repository.AvaliadorRepository;
+import com.rodrigolorandi.sistemamostrapoa.repository.AvaliadorDisponibilidadeRepository;
 import com.rodrigolorandi.sistemamostrapoa.repository.spec.AvaliadorSpecification;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -28,6 +30,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class AvaliadorService {
     private final AvaliadorRepository repository;
     private final MessageHelper messageHelper;
+    private final AvaliadorDisponibilidadeRepository avaliadorDisponibilidadeRepository;
+    private final DisponibilidadeHorarioService disponibilidadeHorarioService;
 
     public AvaliadorDTO create(final AvaliadorCreateDTO requestDTO) {
         Avaliador avaliador = repository.save(avaliadorMapper.buildEntity(requestDTO));
@@ -76,5 +80,40 @@ public class AvaliadorService {
         Avaliador avaliador = findById(id);
         repository.delete(avaliador);
         JsonUtils.logObject(log, "Avaliador deleted:", avaliador);
+    }
+
+    @Transactional
+    public AvaliadorDisponibilidadeDTO create(AvaliadorDisponibilidadeCreateDTO requestDTO) {
+        Long AvaliadorId = requestDTO.avaliadorId();
+        findById(AvaliadorId);
+        avaliadorDisponibilidadeRepository.deleteAllByAvaliadorId(AvaliadorId);
+
+        List<DisponibilidadeHorarioDTO> disponibilidadeHorarioDTO = new ArrayList<>();
+        requestDTO.disponibilidadeHorarioId().forEach(disponibilidadeId -> {
+            disponibilidadeHorarioDTO.add(disponibilidadeHorarioService.findDTOById(disponibilidadeId));
+            avaliadorDisponibilidadeRepository.save(AvaliadorDisponibilidade.builder()
+                    .avaliadorId(AvaliadorId)
+                    .disponibilidadeHorarioId(disponibilidadeId)
+                    .build());
+        });
+
+        return AvaliadorDisponibilidadeDTO.builder()
+                .avaliadorId(AvaliadorId)
+                .disponibilidadeHorarios(disponibilidadeHorarioDTO)
+                .build();
+    }
+
+    public AvaliadorDisponibilidadeDTO findByAvaliadorId(Long AvaliadorId) {
+        findById(AvaliadorId);
+
+        List<AvaliadorDisponibilidade> AvaliadorDisponibilidades = avaliadorDisponibilidadeRepository.findByAvaliadorId(AvaliadorId);
+
+        return AvaliadorDisponibilidadeDTO.builder()
+                .avaliadorId(AvaliadorId)
+                .disponibilidadeHorarios(AvaliadorDisponibilidades.stream()
+                        .map(AvaliadorDisponibilidade -> disponibilidadeHorarioService.findDTOById(AvaliadorDisponibilidade
+                                .getDisponibilidadeHorarioId()))
+                        .collect(Collectors.toList()))
+                .build();
     }
 }

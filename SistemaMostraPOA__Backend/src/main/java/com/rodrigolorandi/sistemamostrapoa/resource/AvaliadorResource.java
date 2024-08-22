@@ -1,8 +1,6 @@
 package com.rodrigolorandi.sistemamostrapoa.resource;
 
-import com.rodrigolorandi.sistemamostrapoa.dto.AvaliadorCreateDTO;
-import com.rodrigolorandi.sistemamostrapoa.dto.AvaliadorDTO;
-import com.rodrigolorandi.sistemamostrapoa.dto.AvaliadorUpdateDTO;
+import com.rodrigolorandi.sistemamostrapoa.dto.*;
 import com.rodrigolorandi.sistemamostrapoa.service.AvaliadorService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -69,5 +67,21 @@ public class AvaliadorResource {
             responses = {@ApiResponse(responseCode = "204", description = "Avaliador successfully deleted")})
     public void delete(@PathVariable Long id) {
         service.delete(id);
+    }
+
+    @PostMapping("/disponibilidade")
+    @ResponseStatus(CREATED)
+    @Operation(summary = "Create Avaliador",
+            responses = {@ApiResponse(responseCode = "201", content = @Content(schema = @Schema(implementation = AvaliadorDisponibilidadeDTO.class)))})
+    public AvaliadorDisponibilidadeDTO create(@Valid @RequestBody AvaliadorDisponibilidadeCreateDTO requestDTO) {
+        return service.create(requestDTO);
+    }
+
+    @GetMapping("disponibilidade/{avaliadorId}")
+    @Operation(summary = "Search Avaliador Disponibilidade by avaliadorId",
+            responses = {@ApiResponse(responseCode = "200", description = "Resource successfully retrieved",
+                    content = @Content(schema = @Schema(implementation = AvaliadorDisponibilidadeDTO.class)))})
+    public AvaliadorDisponibilidadeDTO findDisponibilidadeByVoluntarioId(@Valid @PathVariable Long avaliadorId) {
+        return service.findByAvaliadorId(avaliadorId);
     }
 }
